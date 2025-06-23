@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/svScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Adaptive Security Testing"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Overall Status -->
+        <TextView
+            android:id="@+id/tvOverallStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="System Status: Initializing..."
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:background="#E8F5E8"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Current Risk Level -->
+        <TextView
+            android:id="@+id/tvCurrentRisk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Risk Level: LOW"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="12dp"
+            android:background="#F0F8F0"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Context Status Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Current Context Status"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvLocationStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Location: Unknown"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvNetworkStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Network: Unknown"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvDeviceStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Device: Unknown"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvTimeStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Time: Unknown"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvAppStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="App: Unknown"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvKeystrokeStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Keystroke: No data"
+            android:textSize="14sp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Service Control -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Service Control"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/btnStartService"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Start Service"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnStopService"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Stop Service"
+                android:layout_marginStart="8dp" />
+
+        </LinearLayout>
+
+        <!-- Testing Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Testing Controls"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnRunAllTests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Run Complete Test Suite"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnTestIndividual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Test Individual Collectors"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnTestKeystrokes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Test Keystroke Detection"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnTestScenarios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Test Integration Scenarios"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Progress Indicator -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Instructions -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Instructions:\n• Start the service for protection\n• Run tests to validate all components\n• Watch real-time context updates above\n• Check console output for detailed results"
+            android:textSize="12sp"
+            android:background="#F0F8FF"
+            android:padding="12dp" />
+
+    </LinearLayout>
+</ScrollView>
