@@ -2,18 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Location permissions -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- Remove background location if not essential -->
-    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
+    <!-- Unified location permissions with maxSdkVersion -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:maxSdkVersion="32" />
 
     <!-- Network permissions -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    <!-- Remove unnecessary permissions -->
-    <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
-    <!-- <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> -->
+    <!-- For Android 13+ -->
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation" />
 
     <!-- Device info permissions -->
     <uses-permission android:name="android.permission.BATTERY_STATS" />
@@ -28,7 +29,7 @@
     <!-- Service permissions -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <!-- Add internet permission if needed -->
+    <!-- Internet permission -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -52,12 +53,10 @@
             </intent-filter>
         </activity>
 
-        <!-- Add service with proper foreground type -->
         <service
             android:name=".services.SecurityMonitoringService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location|connectedDevice" />
-
     </application>
 </manifest>
