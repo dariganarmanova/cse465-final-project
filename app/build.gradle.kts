@@ -46,7 +46,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
-
     // AndroidX Libraries
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -62,6 +61,11 @@ dependencies {
 
     // Testing
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)          // androidx.test.ext:junit
+    androidTestImplementation(libs.androidx.espresso.core)  // androidx.test.espresso:espresso-core
+
+    // New test dependencies
+    androidTestImplementation(libs.androidx.test.core)      // androidx.test:core
+    androidTestImplementation(libs.androidx.test.runner)    // androidx.test:runner
+    androidTestImplementation(libs.androidx.test.rules)
 }
