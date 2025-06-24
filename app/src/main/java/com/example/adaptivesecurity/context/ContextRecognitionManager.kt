@@ -1,5 +1,10 @@
+// Update your existing ContextRecognitionManager.kt
+// Add these changes to your existing file:
+
 package com.example.adaptivesecurity.context
+
 import android.content.Context
+import android.view.KeyEvent
 import com.example.adaptivesecurity.context.collectors.*
 import com.example.adaptivesecurity.context.listeners.ContextListener
 import com.example.adaptivesecurity.context.models.*
@@ -14,19 +19,27 @@ class ContextRecognitionManager(
     private var monitoringJob: Job? = null
     private var currentContext: ContextData? = null
 
+    // Your existing collectors
     private val locationCollector = LocationContextCollector(context)
     private val networkCollector = NetworkContextCollector(context)
     private val deviceCollector = DeviceContextCollector(context)
     private val timeCollector = TimeContextCollector()
     private val appUsageCollector = AppUsageContextCollector(context)
 
+    // ADD THIS LINE - New keystroke collector
+    private val keyboardCollector = SimpleKeystrokeCollector(context)
+
     override suspend fun getCurrentContext(): ContextData {
         return withContext(Dispatchers.IO) {
+            // Your existing collector calls
             val locationCtx = locationCollector.collectLocationContext()
             val networkCtx = networkCollector.collectNetworkContext()
             val deviceCtx = deviceCollector.collectDeviceContext()
             val timeCtx = timeCollector.collectTimeContext()
             val appUsageCtx = appUsageCollector.collectAppUsageContext()
+
+            // ADD THIS LINE - Collect keystroke context
+            val keyboardCtx = keyboardCollector.collectKeystrokeContext()
 
             val contextData = ContextData(
                 locationContext = locationCtx,
@@ -34,7 +47,8 @@ class ContextRecognitionManager(
                 deviceContext = deviceCtx,
                 timeContext = timeCtx,
                 appUsageContext = appUsageCtx,
-                riskLevel = calculateRiskLevel(locationCtx, networkCtx, deviceCtx, timeCtx, appUsageCtx)
+                keyboardContext = keyboardCtx, // ADD THIS LINE
+                riskLevel = calculateRiskLevel(locationCtx, networkCtx, deviceCtx, timeCtx, appUsageCtx, keyboardCtx)
             )
 
             currentContext = contextData
@@ -42,6 +56,7 @@ class ContextRecognitionManager(
         }
     }
 
+    // Your existing startContextMonitoring and other methods stay the same...
     override suspend fun startContextMonitoring() {
         if (isMonitoring) return
 
@@ -61,6 +76,13 @@ class ContextRecognitionManager(
                                 newContext.riskLevel,
                                 previousContext.riskLevel
                             )
+                        }
+
+                        // ADD THIS - Keyboard anomaly notifications
+                        newContext.keyboardContext?.let { keyboardCtx ->
+                            if (keyboardCtx.isAnomalous) {
+                                listener.onKeyboardAnomalyDetected(keyboardCtx)
+                            }
                         }
                     }
 
@@ -86,16 +108,18 @@ class ContextRecognitionManager(
         contextListeners.remove(listener)
     }
 
+    // UPDATE THIS METHOD - Add keyboard parameter
     private fun calculateRiskLevel(
         location: LocationContext?,
         network: NetworkContext?,
         device: DeviceContext?,
         time: TimeContext,
-        appUsage: AppUsageContext?
+        appUsage: AppUsageContext?,
+        keyboard: KeyboardContext? // ADD THIS PARAMETER
     ): RiskLevel {
         var riskScore = 0
 
-        // Location-based risk
+        // Your existing risk calculations (keep these exactly as they are)
         location?.let {
             when (it.locationCategory) {
                 LocationCategory.HOME -> riskScore += 0
@@ -106,7 +130,6 @@ class ContextRecognitionManager(
             if (!it.isKnownLocation) riskScore += 2
         }
 
-        // Network-based risk
         network?.let {
             if (!it.isSecureNetwork) riskScore += 3
             when (it.networkType) {
@@ -116,7 +139,6 @@ class ContextRecognitionManager(
             }
         }
 
-        // Device-based risk
         device?.let {
             if (it.batteryLevel < 20) riskScore += 1
             if (!it.isDeviceLocked && System.currentTimeMillis() - it.lastUnlockTime > 300000) {
@@ -124,12 +146,10 @@ class ContextRecognitionManager(
             }
         }
 
-        // Time-based risk
         if (!time.isWorkingHours && time.timeOfDay == TimeOfDay.NIGHT) {
             riskScore += 1
         }
 
-        // App-based risk
         appUsage?.let {
             when (it.appCategory) {
                 AppCategory.BANKING -> riskScore += 0
@@ -139,11 +159,59 @@ class ContextRecognitionManager(
             }
         }
 
+        // ADD THIS - Keyboard-based risk assessment
+        keyboard?.let {
+            if (it.isAnomalous) {
+                when {
+                    it.anomalyScore > 0.8 -> riskScore += 6  // Critical keystroke anomaly
+                    it.anomalyScore > 0.5 -> riskScore += 4  // High keystroke anomaly
+                    it.anomalyScore > 0.3 -> riskScore += 2  // Medium keystroke anomaly
+                    else -> riskScore += 1  // Low keystroke anomaly
+                }
+            }
+
+            // Additional keyboard factors
+            if (it.averageWpm > 0 && it.averageWpm < 10) riskScore += 1 // Suspiciously slow
+            if (it.averageWpm > 100) riskScore += 1 // Suspiciously fast
+            if (it.typingPattern.accuracy < 0.8) riskScore += 1 // Low accuracy
+        }
+
         return when {
             riskScore <= 2 -> RiskLevel.LOW
             riskScore <= 5 -> RiskLevel.MEDIUM
             riskScore <= 8 -> RiskLevel.HIGH
             else -> RiskLevel.CRITICAL
         }
+    }
+
+    // ADD THESE NEW METHODS for keystroke integration
+
+    /**
+     * Handle key events from activities or services
+     */
+    fun onKeyEvent(keyEvent: KeyEvent): Boolean {
+        keyboardCollector.addKeystroke(keyEvent)
+        return false // Don't consume the event
+    }
+
+    /**
+     * Get the keystroke collector for testing
+     */
+    fun getKeystrokeCollector(): SimpleKeystrokeCollector {
+        return keyboardCollector
+    }
+
+    /**
+     * Get debug info about keystroke detection
+     */
+    fun getKeystrokeDebugInfo(): String {
+        return keyboardCollector.getDebugInfo()
+    }
+
+    /**
+     * Reset keystroke baseline (useful for testing)
+     */
+    fun resetKeystrokeBaseline() {
+        keyboardCollector.resetBaseline()
     }
 }
